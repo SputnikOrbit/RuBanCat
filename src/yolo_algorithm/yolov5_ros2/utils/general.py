@@ -2,6 +2,7 @@
 """General utils."""
 
 import contextlib
+from contextlib import contextmanager
 import glob
 import inspect
 import logging
@@ -71,6 +72,17 @@ os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"  # suppress verbose TF compiler warning
 os.environ["TORCH_CPP_LOG_LEVEL"] = "ERROR"  # suppress "NNPACK.cpp could not initialize NNPACK" warnings
 os.environ["KINETO_LOG_LEVEL"] = "5"  # suppress verbose PyTorch profiler output when computing FLOPs
 
+@contextmanager
+def torch_distributed_zero_first(local_rank: int):
+    """Context manager ensuring ordered operations in distributed training by making all processes wait for the leading
+    process.
+    """
+    if local_rank not in [-1, 0]:
+        dist.barrier(device_ids=[local_rank])
+    yield
+    if local_rank == 0:
+        dist.barrier(device_ids=[0])
+        
 
 def is_ascii(s=""):
     """Checks if input string `s` contains only ASCII characters; returns `True` if so, otherwise `False`."""

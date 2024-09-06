@@ -34,10 +34,10 @@
 #include "wheeltec_robot_msg/msg/supersonic.hpp"
 
 //回充相关新增
-#include <std_msgs/msg/int8.hpp>
-#include <std_msgs/msg/bool.hpp>
-#include <std_msgs/msg/u_int8.hpp>
-#include <turtlesim/srv/spawn.hpp>
+// #include <std_msgs/msg/int8.hpp>
+// #include <std_msgs/msg/bool.hpp>
+// #include <std_msgs/msg/u_int8.hpp>
+// #include <turtlesim/srv/spawn.hpp>
 
 using namespace std;
 
@@ -64,9 +64,9 @@ using namespace std;
 #define Distance_TAIL      0XFC //Frame_tail   //帧尾
 
 //自动回充相关
-#define AutoCharge_HEADER      0X7C //Frame_header //自动回充数据帧头
-#define AutoCharge_TAIL        0X7F //Frame_tail   //自动回充数据帧尾
-#define AutoCharge_DATA_SIZE    8   //下位机发送过来的自动回充数据的长度
+// #define AutoCharge_HEADER      0X7C //Frame_header //自动回充数据帧头
+// #define AutoCharge_TAIL        0X7F //Frame_tail   //自动回充数据帧尾
+// #define AutoCharge_DATA_SIZE    8   //下位机发送过来的自动回充数据的长度
 
 //Relative to the range set by the IMU gyroscope, the range is ±500°, corresponding data range is ±32768
 //The gyroscope raw data is converted in radian (rad) units, 1/65.5/57.30=0.00026644
@@ -144,12 +144,12 @@ typedef struct _SEND_DATA_
 		unsigned char Frame_Tail; 
 }SEND_DATA;
 //下位机发送的自动回充相关数据结构体
-typedef struct _RECEIVE_AutoCharge_DATA_     
-{
-	    uint8_t rx[AutoCharge_HEADER];  //8字节
-		unsigned char Frame_Header;     //帧头
-		unsigned char Frame_Tail;		//帧尾
-}RECEIVE_AutoCharge_DATA;
+// typedef struct _RECEIVE_AutoCharge_DATA_     
+// {
+// 	    uint8_t rx[AutoCharge_HEADER];  //8字节
+// 		unsigned char Frame_Header;     //帧头
+// 		unsigned char Frame_Tail;		//帧尾
+// }RECEIVE_AutoCharge_DATA;
 //下位机发送的超声波相关数据结构体
 //下位机向ROS发送的超声波数据结构体
 typedef struct _DISTANCE_DATA_     
@@ -208,38 +208,38 @@ class turn_on_robot : public rclcpp::Node
         rclcpp::Publisher<wheeltec_robot_msg::msg::Supersonic>::SharedPtr distance_publisher;         
 
 		//回充相关发布者
-		rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Charging_publisher;
-		rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr Charging_current_publisher;
-		rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr RED_publisher;
+		// rclcpp::Publisher<std_msgs::msg::Bool>::SharedPtr Charging_publisher;
+		// rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr Charging_current_publisher;
+		// rclcpp::Publisher<std_msgs::msg::UInt8>::SharedPtr RED_publisher;
 		//回充相关订阅者
-		rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr Red_Vel_Sub;
-		rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr Recharge_Flag_Sub;
-		//回充相关服务
-		rclcpp::Service<turtlesim::srv::Spawn>::SharedPtr SetCharge_Service;
+		// rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr Red_Vel_Sub;
+// 		rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr Recharge_Flag_Sub;
+		// 回充相关服务
+		// rclcpp::Service<turtlesim::srv::Spawn>::SharedPtr SetCharge_Service;
 
 		//The speed topic subscribes to the callback function
 		//速度话题订阅回调函数
         void Cmd_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr twist_aux);
         
 		//回充相关回调函数
-		void Red_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr twist_aux); 
-		void Recharge_Flag_Callback(const std_msgs::msg::Int8::SharedPtr Recharge_Flag); 
-		void Set_Charge_Callback(const shared_ptr<turtlesim::srv::Spawn::Request> req,shared_ptr<turtlesim::srv::Spawn::Response> res);
+		// void Red_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr twist_aux); 
+		// void Recharge_Flag_Callback(const std_msgs::msg::Int8::SharedPtr Recharge_Flag); 
+		// void Set_Charge_Callback(const shared_ptr<turtlesim::srv::Spawn::Request> req,shared_ptr<turtlesim::srv::Spawn::Response> res);
 		//回充相关发布函数
-		void Publish_Charging();       
-		void Publish_ChargingCurrent();
-		void Publish_RED();
+		// void Publish_Charging();       
+// 		void Publish_ChargingCurrent();
+		// void Publish_RED();
 
 		void Publish_Odom();      //Pub the speedometer topic //发布里程计话题
 		void Publish_ImuSensor(); //Pub the IMU sensor topic //发布IMU传感器话题
-		void Publish_Voltage();   //Pub the power supply voltage topic //发布电源电压话题
-		void Publish_distance();//发布超声波距离
+		// void Publish_Voltage();   //Pub the power supply voltage topic //发布电源电压话题
+		// void Publish_distance();//发布超声波距离
         //从串口(ttyUSB)读取运动底盘速度、IMU、电源电压数据
         //Read motion chassis speed, IMU, power supply voltage data from serial port (ttyUSB)
         bool Get_Sensor_Data();   
 		bool Get_Sensor_Data_New();
         unsigned char Check_Sum(unsigned char Count_Number,unsigned char mode); //BBC check function //BBC校验函数
-        unsigned char Check_Sum_AutoCharge(unsigned char Count_Number,unsigned char mode); //BBC check function //BBC校验函数
+        //unsigned char Check_Sum_AutoCharge(unsigned char Count_Number,unsigned char mode); //BBC check function //BBC校验函数
         short IMU_Trans(uint8_t Data_High,uint8_t Data_Low);  //IMU data conversion read //IMU数据转化读取
 		float Odom_Trans(uint8_t Data_High,uint8_t Data_Low); //Odometer data is converted to read //里程计数据转化读取
 
@@ -248,17 +248,17 @@ class turn_on_robot : public rclcpp::Node
         RECEIVE_DATA Receive_Data; //The serial port receives the data structure //串口接收数据结构体
         SEND_DATA Send_Data;       //The serial port sends the data structure //串口发送数据结构体
         DISTANCE_DATA Distance_Data; //超声波数据
-        RECEIVE_AutoCharge_DATA Receive_AutoCharge_Data;  //串口接收自动回充数据结构体
+        // RECEIVE_AutoCharge_DATA Receive_AutoCharge_Data;  //串口接收自动回充数据结构体
         Supersonic_data distance;  //超声波距离对象
         Vel_Pos_Data Robot_Pos;    //The position of the robot //机器人的位置
         Vel_Pos_Data Robot_Vel;    //The speed of the robot //机器人的速度
         MPU6050_DATA Mpu6050_Data; //IMU data //IMU数据
 
-		int8_t AutoRecharge=0;
-        float Power_voltage;       //Power supply voltage //电源电压
-        bool Charging=0;           //Whether the robot is charging the flag bit //机器人是否在充电的标志位
-        float Charging_Current=0;  //Charging_Current //充电电流
-        uint8_t Red=0;                //Whether the robot finds the marker bit of infrared signal (charging pile)  //机器人是否寻找到红外信号(充电桩)的标志位 
+		// int8_t AutoRecharge=0;
+//         float Power_voltage;       //Power supply voltage //电源电压
+        // bool Charging=0;           //Whether the robot is charging the flag bit //机器人是否在充电的标志位
+        // float Charging_Current=0;  //Charging_Current //充电电流
+        // uint8_t Red=0;                //Whether the robot finds the marker bit of infrared signal (charging pile)  //机器人是否寻找到红外信号(充电桩)的标志位 
 
 };
 #endif

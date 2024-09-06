@@ -29,14 +29,14 @@ def generate_launch_description():
     #minibot.launch.py contains commonly used robot models
     #launch_arguments choices:mini_mec/mini_akm/mini_tank/mini_4wd/mini_diff/mini_omni/brushless_senior_diff
     #!!!At the same time, you need to modify ld.add_action(minibot_type) and #ld.add_action(flagship_type)
-    minibot_type = IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robot_mode_description_minibot.launch.py')),
-            launch_arguments={'mini_mec': 'true'}.items(),
-    )
+#     minibot_type = IncludeLaunchDescription(
+#             PythonLaunchDescriptionSource(os.path.join(launch_dir, 'robot_mode_description_minibot.launch.py')),
+#             launch_arguments={'mini_mec': 'true'}.items(),
+#     )
 
     ld = LaunchDescription()
 
-    ld.add_action(minibot_type)
+    # ld.add_action(minibot_type)
     ld.add_action(wheeltec_robot)
     ld.add_action(imu_filter_node)    
 

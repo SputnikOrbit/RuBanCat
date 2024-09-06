@@ -9,8 +9,8 @@ using namespace std;
 rclcpp::Node::SharedPtr node_handle = nullptr;
 
 //自动回充使用相关变量
-bool check_AutoCharge_data = false;
-bool charge_set_state = false;
+// bool check_AutoCharge_data = false;
+// bool charge_set_state = false;
 /**************************************
 Date: January 28, 2021
 Function: The main function, ROS initialization, creates the Robot_control object through the Turn_on_robot class and automatically calls the constructor initialization
@@ -57,7 +57,7 @@ void turn_on_robot::Cmd_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr 
   short  transition;  //intermediate variable //中间变量
 
   Send_Data.tx[0]=FRAME_HEADER; //frame head 0x7B //帧头0X7B
-  Send_Data.tx[1] = AutoRecharge; //set aside //预留位
+  Send_Data.tx[1] = 0; //set aside //预留位
   Send_Data.tx[2] = 0; //set aside //预留位
 
   //The target velocity of the X-axis of the robot
@@ -166,17 +166,17 @@ Date: January 28, 2021
 Function: Publish voltage-related information
 功能: 发布电压相关信息
 ***************************************/
-void turn_on_robot::Publish_Voltage()
-{
-    std_msgs::msg::Float32 voltage_msgs; //Define the data type of the power supply voltage publishing topic //定义电源电压发布话题的数据类型
-    static float Count_Voltage_Pub=0;
-    if(Count_Voltage_Pub++>10)
-      {
-        Count_Voltage_Pub=0;  
-        voltage_msgs.data = Power_voltage; //The power supply voltage is obtained //电源供电的电压获取
-        voltage_publisher->publish(voltage_msgs); //Post the power supply voltage topic unit: V, volt //发布电源电压话题单位：V、伏特
-      }
-}
+// void turn_on_robot::Publish_Voltage()
+// {
+//     std_msgs::msg::Float32 voltage_msgs; //Define the data type of the power supply voltage publishing topic //定义电源电压发布话题的数据类型
+//     static float Count_Voltage_Pub=0;
+//     if(Count_Voltage_Pub++>10)
+//       {
+//         Count_Voltage_Pub=0;  
+//         voltage_msgs.data = Power_voltage; //The power supply voltage is obtained //电源供电的电压获取
+//         voltage_publisher->publish(voltage_msgs); //Post the power supply voltage topic unit: V, volt //发布电源电压话题单位：V、伏特
+//       }
+// }
 
 ////////// 回充发布与回调 ////////
 /**************************************
@@ -184,143 +184,143 @@ Date: January 17, 2022
 Function: Pub the topic whether the robot finds the infrared signal (charging station)
 功能: 发布机器人是否寻找到红外信号(充电桩)的话题
 ***************************************/
-void turn_on_robot::Publish_RED()
-{
-    std_msgs::msg::UInt8 msg;
-    msg.data=Red;
-    RED_publisher->publish(msg); 
+// void turn_on_robot::Publish_RED()
+// {
+//     std_msgs::msg::UInt8 msg;
+//     msg.data=Red;
+//     RED_publisher->publish(msg); 
 
-}
+// }
 /**************************************
 Date: January 14, 2022
 Function: Publish a topic about whether the robot is charging
 功能: 发布机器人是否在充电的话题
 ***************************************/
-void turn_on_robot::Publish_Charging()
-{
-    static bool last_charging;
-    std_msgs::msg::Bool msg;
-    msg.data=Charging;
-    Charging_publisher->publish(msg); 
-    if(last_charging==false && Charging==true)cout<<GREEN<<"Robot is charging."<<endl<<RESET;
-    if(last_charging==true && Charging==false)cout<<RED  <<"Robot charging has disconnected."<<endl<<RESET;
-    last_charging=Charging;
-}
+// void turn_on_robot::Publish_Charging()
+// {
+//     static bool last_charging;
+//     std_msgs::msg::Bool msg;
+//     msg.data=Charging;
+//     Charging_publisher->publish(msg); 
+//     if(last_charging==false && Charging==true)cout<<GREEN<<"Robot is charging."<<endl<<RESET;
+//     if(last_charging==true && Charging==false)cout<<RED  <<"Robot charging has disconnected."<<endl<<RESET;
+//     last_charging=Charging;
+// }
 /**************************************
 Date: January 28, 2021
 Function: Publish charging current information
 功能: 发布充电电流信息
 ***************************************/
-void turn_on_robot::Publish_ChargingCurrent()
-{
-    std_msgs::msg::Float32 msg; 
-    msg.data=Charging_Current;
-    Charging_current_publisher->publish(msg);
-}
+// void turn_on_robot::Publish_ChargingCurrent()
+// {
+//     std_msgs::msg::Float32 msg; 
+//     msg.data=Charging_Current;
+//     Charging_current_publisher->publish(msg);
+// }
 
 /**************************************
 Date: March 1, 2022
 Function: Infrared connection speed topic subscription Callback function, according to the subscription command through the serial port to set the infrared connection speed
 功能: 红外对接速度话题订阅回调函数Callback，根据订阅的指令通过串口发指令设置红外对接速度
 ***************************************/
-void turn_on_robot::Red_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr twist_aux)
-{
-  short  transition;  //intermediate variable //中间变量
+// void turn_on_robot::Red_Vel_Callback(const geometry_msgs::msg::Twist::SharedPtr twist_aux)
+// {
+//   short  transition;  //intermediate variable //中间变量
 
-  Send_Data.tx[0]=FRAME_HEADER; //frame head 0x7B //帧头0X7B
+//   Send_Data.tx[0]=FRAME_HEADER; //frame head 0x7B //帧头0X7B
 
-  Send_Data.tx[1] = 3; //Infrared docking speed setting flag bit = 3 //红外对接速度设置标志位=3
-  Send_Data.tx[2] = 0; //set aside //预留位
+//   Send_Data.tx[1] = 3; //Infrared docking speed setting flag bit = 3 //红外对接速度设置标志位=3
+//   Send_Data.tx[2] = 0; //set aside //预留位
 
-  //The target velocity of the X-axis of the robot
-  //机器人x轴的目标线速度
-  transition=0;
-  transition = twist_aux->linear.x*1000; //将浮点数放大一千倍，简化传输
-  Send_Data.tx[4] = transition;     //取数据的低8位
-  Send_Data.tx[3] = transition>>8;  //取数据的高8位
+//   //The target velocity of the X-axis of the robot
+//   //机器人x轴的目标线速度
+//   transition=0;
+//   transition = twist_aux->linear.x*1000; //将浮点数放大一千倍，简化传输
+//   Send_Data.tx[4] = transition;     //取数据的低8位
+//   Send_Data.tx[3] = transition>>8;  //取数据的高8位
 
-  //The target velocity of the Y-axis of the robot
-  //机器人y轴的目标线速度
-  transition=0;
-  transition = twist_aux->linear.y*1000;
-  Send_Data.tx[6] = transition;
-  Send_Data.tx[5] = transition>>8;
+//   //The target velocity of the Y-axis of the robot
+//   //机器人y轴的目标线速度
+//   transition=0;
+//   transition = twist_aux->linear.y*1000;
+//   Send_Data.tx[6] = transition;
+//   Send_Data.tx[5] = transition>>8;
 
-  //The target angular velocity of the robot's Z axis
-  //机器人z轴的目标角速度
-  transition=0;
-  transition = twist_aux->angular.z*1000;
-  Send_Data.tx[8] = transition;
-  Send_Data.tx[7] = transition>>8;
+//   //The target angular velocity of the robot's Z axis
+//   //机器人z轴的目标角速度
+//   transition=0;
+//   transition = twist_aux->angular.z*1000;
+//   Send_Data.tx[8] = transition;
+//   Send_Data.tx[7] = transition>>8;
 
-  Send_Data.tx[9]=Check_Sum(9,SEND_DATA_CHECK);  //BCC check //BCC校验
-  Send_Data.tx[10]=FRAME_TAIL; //frame tail 0x7D //帧尾0X7D
-  try
-  {
-    Stm32_Serial.write(Send_Data.tx,sizeof (Send_Data.tx)); //Sends data to the downloader via serial port //通过串口向下位机发送数据 
-  }
-  catch (serial::IOException& e)   
-  {
-    RCLCPP_ERROR(this->get_logger(),("Unable to send data through serial port")); //If sending data fails, an error message is printed //如果发送数据失败，打印错误信息
-  }
-}
+//   Send_Data.tx[9]=Check_Sum(9,SEND_DATA_CHECK);  //BCC check //BCC校验
+//   Send_Data.tx[10]=FRAME_TAIL; //frame tail 0x7D //帧尾0X7D
+//   try
+//   {
+//     Stm32_Serial.write(Send_Data.tx,sizeof (Send_Data.tx)); //Sends data to the downloader via serial port //通过串口向下位机发送数据 
+//   }
+//   catch (serial::IOException& e)   
+//   {
+//     RCLCPP_ERROR(this->get_logger(),("Unable to send data through serial port")); //If sending data fails, an error message is printed //如果发送数据失败，打印错误信息
+//   }
+// }
 
 /**************************************
 Date: January 14, 2022
 Function: Subscription robot recharge flag bit topic, used to tell the lower machine speed command is normal command or recharge command
 功能: 订阅机器人是否回充标志位话题，用于告诉下位机速度命令是正常命令还是回充命令
 ***************************************/
-void turn_on_robot::Recharge_Flag_Callback(const std_msgs::msg::Int8::SharedPtr Recharge_Flag)
-{
-  AutoRecharge=Recharge_Flag->data;
-}
+// void turn_on_robot::Recharge_Flag_Callback(const std_msgs::msg::Int8::SharedPtr Recharge_Flag)
+// {
+//   AutoRecharge=Recharge_Flag->data;
+// }
 
-//服务
-void turn_on_robot::Set_Charge_Callback(const shared_ptr<turtlesim::srv::Spawn::Request> req,shared_ptr<turtlesim::srv::Spawn::Response> res)
-{
-    Send_Data.tx[0]=FRAME_HEADER; //frame head 0x7B //֡ͷ0X7B
+// //服务
+// void turn_on_robot::Set_Charge_Callback(const shared_ptr<turtlesim::srv::Spawn::Request> req,shared_ptr<turtlesim::srv::Spawn::Response> res)
+// {
+//     Send_Data.tx[0]=FRAME_HEADER; //frame head 0x7B //֡ͷ0X7B
 
-    if(round(req->x)==1)
-      Send_Data.tx[1] = 1;
-    else if(round(req->x)==2)
-      Send_Data.tx[1] = 2; 
-    else if(round(req->x)==0)
-      Send_Data.tx[1] = 0,AutoRecharge=0;
+//     if(round(req->x)==1)
+//       Send_Data.tx[1] = 1;
+//     else if(round(req->x)==2)
+//       Send_Data.tx[1] = 2; 
+//     else if(round(req->x)==0)
+//       Send_Data.tx[1] = 0,AutoRecharge=0;
 
-    Send_Data.tx[2] = 0; 
-    Send_Data.tx[3] = 0;  
-    Send_Data.tx[4] = 0;   
-    Send_Data.tx[5] = 0;
-    Send_Data.tx[6] = 0;
-    Send_Data.tx[7] = 0;
-    Send_Data.tx[8] = 0;
-    Send_Data.tx[9]=Check_Sum(9,SEND_DATA_CHECK); //For the BCC check bits, see the Check_Sum function //BCCУ��λ������μ�Check_Sum����
-    Send_Data.tx[10]=FRAME_TAIL; //frame tail 0x7D //֡β0X7D
-    try
-    {
-      Stm32_Serial.write(Send_Data.tx,sizeof (Send_Data.tx)); //Sends data to the downloader via serial port //ͨ����������λ���������� 
-    }
-    catch (serial::IOException& e)   
-    {
-      res->name = "false";
-    }
+//     Send_Data.tx[2] = 0; 
+//     Send_Data.tx[3] = 0;  
+//     Send_Data.tx[4] = 0;   
+//     Send_Data.tx[5] = 0;
+//     Send_Data.tx[6] = 0;
+//     Send_Data.tx[7] = 0;
+//     Send_Data.tx[8] = 0;
+//     Send_Data.tx[9]=Check_Sum(9,SEND_DATA_CHECK); //For the BCC check bits, see the Check_Sum function //BCCУ��λ������μ�Check_Sum����
+//     Send_Data.tx[10]=FRAME_TAIL; //frame tail 0x7D //֡β0X7D
+//     try
+//     {
+//       Stm32_Serial.write(Send_Data.tx,sizeof (Send_Data.tx)); //Sends data to the downloader via serial port //ͨ����������λ���������� 
+//     }
+//     catch (serial::IOException& e)   
+//     {
+//       res->name = "false";
+//     }
 
-    if( Send_Data.tx[1]==0 )
-    {
-      if(charge_set_state==0)
-        AutoRecharge=0,res->name = "true";
-      else
-        res->name = "false";
-    }
-    else
-    {
-      if(charge_set_state==1)
-        res->name = "true";
-      else
-        res->name = "false";
-    }
-    return;
-}
+//     if( Send_Data.tx[1]==0 )
+//     {
+//       if(charge_set_state==0)
+//         AutoRecharge=0,res->name = "true";
+//       else
+//         res->name = "false";
+//     }
+//     else
+//     {
+//       if(charge_set_state==1)
+//         res->name = "true";
+//       else
+//         res->name = "false";
+//     }
+//     return;
+// }
 ////////// 回充发布与回调 ////////
 
 /**************************************
@@ -351,20 +351,20 @@ unsigned char turn_on_robot::Check_Sum(unsigned char Count_Number,unsigned char 
   return check_sum; //Returns the bitwise XOR result //返回按位异或结果
 }
 
-//自动回充专用校验位
-unsigned char turn_on_robot::Check_Sum_AutoCharge(unsigned char Count_Number,unsigned char mode)
-{
-  unsigned char check_sum=0,k;
-  if(mode==0) //Receive data mode //接收数据模式
-  {
-   for(k=0;k<Count_Number;k++)
-    {
-     check_sum=check_sum^Receive_AutoCharge_Data.rx[k]; //By bit or by bit //按位异或
-    }
-  }
+// //自动回充专用校验位
+// unsigned char turn_on_robot::Check_Sum_AutoCharge(unsigned char Count_Number,unsigned char mode)
+// {
+//   unsigned char check_sum=0,k;
+//   if(mode==0) //Receive data mode //接收数据模式
+//   {
+//    for(k=0;k<Count_Number;k++)
+//     {
+//      check_sum=check_sum^Receive_AutoCharge_Data.rx[k]; //By bit or by bit //按位异或
+//     }
+//   }
 
-  return check_sum;
-}
+//   return check_sum;
+// }
 
 /**************************************
 Date: November 18, 2021
@@ -475,10 +475,10 @@ bool turn_on_robot::Get_Sensor_Data()
 
         //Get the battery voltage
         //获取电池电压
-        transition_16 = 0;
-        transition_16 |=  Receive_Data.rx[20]<<8;
-        transition_16 |=  Receive_Data.rx[21];  
-        Power_voltage = transition_16/1000+(transition_16 % 1000)*0.001; //Unit conversion millivolt(mv)->volt(v) //单位转换毫伏(mv)->伏(v)
+        // transition_16 = 0;
+        // transition_16 |=  Receive_Data.rx[20]<<8;
+        // transition_16 |=  Receive_Data.rx[21];  
+        // Power_voltage = transition_16/1000+(transition_16 % 1000)*0.001; //Unit conversion millivolt(mv)->volt(v) //单位转换毫伏(mv)->伏(v)
 
         return true;
      }
@@ -507,16 +507,16 @@ bool turn_on_robot::Get_Sensor_Data_New()
   */  
 
   Receive_Data.rx[count] = Receive_Data_Pr[0]; //Fill the array with serial data //串口数据填入数组
-  Receive_AutoCharge_Data.rx[count2] = Receive_Data_Pr[0];
+  // Receive_AutoCharge_Data.rx[count2] = Receive_Data_Pr[0];
 
   Receive_Data.Frame_Header = Receive_Data.rx[0]; //The first part of the data is the frame header 0X7B //数据的第一位是帧头0X7B
   Receive_Data.Frame_Tail = Receive_Data.rx[23];  //The last bit of data is frame tail 0X7D //数据的最后一位是帧尾0X7D
 
   //接收到自动回充数据的帧头、上一个数据是24字节的帧尾，表明自动回充数据开始到来
-  if((Receive_Data_Pr[0] == AutoCharge_HEADER )||count2>0)
-    count2++;
-  else
-    count2=0; 
+  // if((Receive_Data_Pr[0] == AutoCharge_HEADER )||count2>0)
+  //   count2++;
+  // else
+  //   count2=0; 
 
   if(Receive_Data_Pr[0] == FRAME_HEADER || count>0) //Ensure that the first data in the array is FRAME_HEADER //确保数组第一个数据为FRAME_HEADER
     count++;
@@ -524,32 +524,32 @@ bool turn_on_robot::Get_Sensor_Data_New()
   	count=0;
 
   //自动回充数据处理
-  if(count2 == AutoCharge_DATA_SIZE)
-  {
-    count2=0;
-    if(Receive_AutoCharge_Data.rx[AutoCharge_DATA_SIZE-1]==AutoCharge_TAIL) //确认帧尾   
-    {
-      check2 =  Check_Sum_AutoCharge(6,0);//校验位计算    
-      if(check2 == Receive_AutoCharge_Data.rx[AutoCharge_DATA_SIZE-2]) //校验正确
-      {
-        error2=0;
-      }
-      if(error2 == 0)  //校验正确开始赋值
-      {
-        transition_16 = 0;
-        transition_16   |=  Receive_AutoCharge_Data.rx[1]<<8;
-        transition_16   |=  Receive_AutoCharge_Data.rx[2]; 
-        Charging_Current = transition_16/1000+(transition_16 % 1000)*0.001; //充电电流 
+  // if(count2 == AutoCharge_DATA_SIZE)
+  // {
+  //   count2=0;
+  //   if(Receive_AutoCharge_Data.rx[AutoCharge_DATA_SIZE-1]==AutoCharge_TAIL) //确认帧尾   
+  //   {
+  //     check2 =  Check_Sum_AutoCharge(6,0);//校验位计算    
+  //     if(check2 == Receive_AutoCharge_Data.rx[AutoCharge_DATA_SIZE-2]) //校验正确
+  //     {
+  //       error2=0;
+  //     }
+  //     if(error2 == 0)  //校验正确开始赋值
+  //     {
+  //       transition_16 = 0;
+  //       transition_16   |=  Receive_AutoCharge_Data.rx[1]<<8;
+  //       transition_16   |=  Receive_AutoCharge_Data.rx[2]; 
+  //       Charging_Current = transition_16/1000+(transition_16 % 1000)*0.001; //充电电流 
         
-        Red =  Receive_AutoCharge_Data.rx[3];    //红外接受状态
-        Charging = Receive_AutoCharge_Data.rx[4];//小车充电状态
+  //       Red =  Receive_AutoCharge_Data.rx[3];    //红外接受状态
+  //       Charging = Receive_AutoCharge_Data.rx[4];//小车充电状态
 
-        charge_set_state = Receive_AutoCharge_Data.rx[5];
+  //       charge_set_state = Receive_AutoCharge_Data.rx[5];
 
-        check_AutoCharge_data = true; //数据成功接收标志位
-      }
-    }
-  }
+  //       check_AutoCharge_data = true; //数据成功接收标志位
+  //     }
+  //   }
+  
 
   if(count == 24) //Verify the length of the packet //验证数据包的长度
   {
@@ -601,10 +601,10 @@ bool turn_on_robot::Get_Sensor_Data_New()
 
         //Get the battery voltage
         //获取电池电压
-        transition_16 = 0;
-        transition_16 |=  Receive_Data.rx[20]<<8;
-        transition_16 |=  Receive_Data.rx[21];  
-        Power_voltage = transition_16/1000+(transition_16 % 1000)*0.001; //Unit conversion millivolt(mv)->volt(v) //单位转换毫伏(mv)->伏(v)
+        // transition_16 = 0;
+        // transition_16 |=  Receive_Data.rx[20]<<8;
+        // transition_16 |=  Receive_Data.rx[21];  
+        // Power_voltage = transition_16/1000+(transition_16 % 1000)*0.001; //Unit conversion millivolt(mv)->volt(v) //单位转换毫伏(mv)->伏(v)
           
         return true;
       }
@@ -643,20 +643,20 @@ void turn_on_robot::Control()
 
       Publish_Odom();      //Pub the speedometer topic //发布里程计话题
       Publish_ImuSensor(); //Pub the IMU topic //发布IMU话题    
-      Publish_Voltage();   //Pub the topic of power supply voltage //发布电源电压话题
+      // Publish_Voltage();   //Pub the topic of power supply voltage //发布电源电压话题
 
       _Last_Time = _Now; //Record the time and use it to calculate the time interval //记录时间，用于计算时间间隔
       
     }
     
     //自动回充数据话题
-    if(check_AutoCharge_data)
-    {
-      Publish_Charging();  //Pub a topic about whether the robot is charging //发布机器人是否在充电的话题
-      Publish_RED();       //Pub the topic whether the robot finds the infrared signal (charging station) //发布机器人是否寻找到红外信号(充电桩)的话题
-      Publish_ChargingCurrent(); //Pub the charging current topic //发布充电电流话题
-      check_AutoCharge_data = false;
-    }
+    // if(check_AutoCharge_data)
+    // {
+    //   Publish_Charging();  //Pub a topic about whether the robot is charging //发布机器人是否在充电的话题
+    //   Publish_RED();       //Pub the topic whether the robot finds the infrared signal (charging station) //发布机器人是否寻找到红外信号(充电桩)的话题
+    //   Publish_ChargingCurrent(); //Pub the charging current topic //发布充电电流话题
+    //   check_AutoCharge_data = false;
+    // }
 
     rclcpp::spin_some(this->get_node_base_interface());   //The loop waits for the callback function //循环等待回调函数
     }
@@ -674,8 +674,8 @@ Function: Constructor, executed only once, for initialization
 ***************************************/
 turn_on_robot::turn_on_robot():rclcpp::Node ("wheeltec_robot")
 {
-  Sampling_Time=0;
-  Power_voltage=0;
+  //Sampling_Time=0;
+  //Power_voltage=0;
   //Clear the data
   //清空数据
   memset(&Robot_Pos, 0, sizeof(Robot_Pos));
@@ -702,21 +702,21 @@ turn_on_robot::turn_on_robot():rclcpp::Node ("wheeltec_robot")
 
   odom_publisher = create_publisher<nav_msgs::msg::Odometry>("odom", 2);//Create the odometer topic publisher //创建里程计话题发布者
   imu_publisher = create_publisher<sensor_msgs::msg::Imu>("imu/data_raw", 2); //Create an IMU topic publisher //创建IMU话题发布者
-  voltage_publisher = create_publisher<std_msgs::msg::Float32>("PowerVoltage", 1);//Create a battery-voltage topic publisher //创建电池电压话题发布者
+  // voltage_publisher = create_publisher<std_msgs::msg::Float32>("PowerVoltage", 1);//Create a battery-voltage topic publisher //创建电池电压话题发布者
 
-  //回充发布者
-  Charging_publisher = create_publisher<std_msgs::msg::Bool>("robot_charging_flag", 10);
-  Charging_current_publisher = create_publisher<std_msgs::msg::Float32>("robot_charging_current", 10);
-  RED_publisher = create_publisher<std_msgs::msg::UInt8>("robot_red_flag", 10);
-  //回充订阅者
-  Red_Vel_Sub = create_subscription<geometry_msgs::msg::Twist>(
-      "red_vel", 10, std::bind(&turn_on_robot::Red_Vel_Callback, this, std::placeholders::_1));
-  Recharge_Flag_Sub = create_subscription<std_msgs::msg::Int8>(
-      "robot_recharge_flag", 10, std::bind(&turn_on_robot::Recharge_Flag_Callback, this,std::placeholders::_1));
-  //回充服务提供
-  SetCharge_Service=this->create_service<turtlesim::srv::Spawn>\
-  ("/set_charge",std::bind(&turn_on_robot::Set_Charge_Callback,this, \ 
-    std::placeholders::_1 ,std::placeholders::_2));
+  // //回充发布者
+  // Charging_publisher = create_publisher<std_msgs::msg::Bool>("robot_charging_flag", 10);
+  // Charging_current_publisher = create_publisher<std_msgs::msg::Float32>("robot_charging_current", 10);
+  // RED_publisher = create_publisher<std_msgs::msg::UInt8>("robot_red_flag", 10);
+  // //回充订阅者
+  // Red_Vel_Sub = create_subscription<geometry_msgs::msg::Twist>(
+  //     "red_vel", 10, std::bind(&turn_on_robot::Red_Vel_Callback, this, std::placeholders::_1));
+  // Recharge_Flag_Sub = create_subscription<std_msgs::msg::Int8>(
+  //     "robot_recharge_flag", 10, std::bind(&turn_on_robot::Recharge_Flag_Callback, this,std::placeholders::_1));
+  // //回充服务提供
+  // SetCharge_Service=this->create_service<turtlesim::srv::Spawn>\
+  // ("/set_charge",std::bind(&turn_on_robot::Set_Charge_Callback,this, \ 
+  //   std::placeholders::_1 ,std::placeholders::_2));
     
   //Set the velocity control command callback function
   //速度控制命令订阅回调函数设置
