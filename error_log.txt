@@ -1,0 +1,88 @@
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py 
+[INFO] [launch]: All log files can be found below /home/jetson-orin0/.ros/log/2024-09-06-16-37-41-143250-jetsonorin0-desktop-1095233
+[INFO] [launch]: Default logging verbosity is set to INFO
+Task exception was never retrieved
+future: <Task finished name='Task-2' coro=<LaunchService._process_one_event() done, defined at /opt/ros/foxy/lib/python3.8/site-packages/launch/launch_service.py:226> exception=FileNotFoundError(2, 'No such file or directory')>
+Traceback (most recent call last):
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_service.py", line 228, in _process_one_event
+    await self.__process_event(next_event)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_service.py", line 248, in __process_event
+    visit_all_entities_and_collect_futures(entity, self.__context))
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/utilities/visit_all_entities_and_collect_futures_impl.py", line 45, in visit_all_entities_and_collect_futures
+    futures_to_return += visit_all_entities_and_collect_futures(sub_entity, context)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/utilities/visit_all_entities_and_collect_futures_impl.py", line 45, in visit_all_entities_and_collect_futures
+    futures_to_return += visit_all_entities_and_collect_futures(sub_entity, context)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/utilities/visit_all_entities_and_collect_futures_impl.py", line 45, in visit_all_entities_and_collect_futures
+    futures_to_return += visit_all_entities_and_collect_futures(sub_entity, context)
+  [Previous line repeated 1 more time]
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/utilities/visit_all_entities_and_collect_futures_impl.py", line 38, in visit_all_entities_and_collect_futures
+    sub_entities = entity.visit(context)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/action.py", line 108, in visit
+    return self.execute(context)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/actions/include_launch_description.py", line 130, in execute
+    launch_description = self.__launch_description_source.get_launch_description(context)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_description_source.py", line 84, in get_launch_description
+    self._get_launch_description(self.__expanded_location)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_description_sources/python_launch_description_source.py", line 51, in _get_launch_description
+    return get_launch_description_from_python_launch_file(location)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_description_sources/python_launch_file_utilities.py", line 62, in get_launch_description_from_python_launch_file
+    launch_file_module = load_python_launch_file_as_module(python_launch_file_path)
+  File "/opt/ros/foxy/lib/python3.8/site-packages/launch/launch_description_sources/python_launch_file_utilities.py", line 37, in load_python_launch_file_as_module
+    loader.exec_module(mod)
+  File "<frozen importlib._bootstrap_external>", line 844, in exec_module
+  File "<frozen importlib._bootstrap_external>", line 980, in get_code
+  File "<frozen importlib._bootstrap_external>", line 1037, in get_data
+FileNotFoundError: [Errno 2] No such file or directory: '/home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/share/turn_on_wheeltec_robot/launch/robot_mode_description_minibot.launch.py'
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ source install/setup.bash 
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py 
+[INFO] [launch]: All log files can be found below /home/jetson-orin0/.ros/log/2024-09-06-16-42-41-726757-jetsonorin0-desktop-1112120
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [wheeltec_robot_node-1]: process started with pid [1112170]
+[INFO] [imu_filter_madgwick_node-2]: process started with pid [1112172]
+[wheeltec_robot_node-1] /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node: symbol lookup error: /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node: undefined symbol: _ZN10tracetools6detail18get_symbol_funcptrEPv
+[ERROR] [wheeltec_robot_node-1]: process has died [pid 1112170, exit code 127, cmd '/home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node --ros-args --params-file /tmp/launch_params_vs6n9u1y'].
+[ERROR] [imu_filter_madgwick_node-2]: process has died [pid 1112172, exit code -11, cmd '/opt/ros/galactic/lib/imu_filter_madgwick/imu_filter_madgwick_node --ros-args --params-file /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/share/turn_on_wheeltec_robot/config/imu.yaml'].
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ source install/setup.bash 
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ ros2 launch turn_on_wheeltec_robot turn_on_wheeltec_robot.launch.py 
+[INFO] [launch]: All log files can be found below /home/jetson-orin0/.ros/log/2024-09-06-17-10-34-065906-jetsonorin0-desktop-1203782
+[INFO] [launch]: Default logging verbosity is set to INFO
+[INFO] [wheeltec_robot_node-1]: process started with pid [1203838]
+[INFO] [imu_filter_madgwick_node-2]: process started with pid [1203840]
+[wheeltec_robot_node-1] /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node: symbol lookup error: /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node: undefined symbol: rmw_qos_durability_policy_from_str
+[ERROR] [wheeltec_robot_node-1]: process has died [pid 1203838, exit code 127, cmd '/home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/lib/turn_on_wheeltec_robot/wheeltec_robot_node --ros-args --params-file /tmp/launch_params_qsbbsxnk'].
+[ERROR] [imu_filter_madgwick_node-2]: process has died [pid 1203840, exit code -11, cmd '/opt/ros/galactic/lib/imu_filter_madgwick/imu_filter_madgwick_node --ros-args --params-file /home/jetson-orin0/yolo_follow/install/turn_on_wheeltec_robot/share/turn_on_wheeltec_robot/config/imu.yaml'].
+
+
+
+
+jetson-orin0@jetsonorin0-desktop:~/yolo_follow$ ros2 run rviz2 rviz2
+/usr/lib/python3/dist-packages/requests/__init__.py:89: RequestsDependencyWarning: urllib3 (2.2.1) or chardet (3.0.4) doesn't match a supported version!
+  warnings.warn("urllib3 ({}) or chardet ({}) doesn't match a supported "
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 584, in _build_master
+    ws.require(__requires__)
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 901, in require
+    needed = self.resolve(parse_requirements(requirements))
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 792, in resolve
+    raise VersionConflict(dist, req).with_context(dependent_req)
+pkg_resources.VersionConflict: (ros2cli 0.13.5 (/opt/ros/galactic/lib/python3.8/site-packages), Requirement.parse('ros2cli==0.9.13'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/opt/ros/foxy/bin/ros2", line 6, in <module>
+    from pkg_resources import load_entry_point
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 3254, in <module>
+    def _initialize_master_working_set():
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 3237, in _call_aside
+    f(*args, **kwargs)
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 3266, in _initialize_master_working_set
+    working_set = WorkingSet._build_master()
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 586, in _build_master
+    return cls._build_from_requirements(__requires__)
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 599, in _build_from_requirements
+    dists = ws.resolve(reqs, Environment())
+  File "/usr/lib/python3/dist-packages/pkg_resources/__init__.py", line 787, in resolve
+    raise DistributionNotFound(req, requirers)
+pkg_resources.DistributionNotFound: The 'ros2cli==0.9.13' distribution was not found and is required by the application
+
